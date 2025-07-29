@@ -1,0 +1,7 @@
+temperature,humidity,water_level,feed_level,label
+36.5,70,80,90,normal 
+39.0,85,50,40,abnormal 
+35.0,60,75,85,normal 
+42.0,90,30,20,abnormal 
+37.5,65,80,90,normal 
+45.0,88,40,35,abnormal 
