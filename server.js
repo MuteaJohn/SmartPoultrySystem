@@ -18,5 +18,12 @@ app.use('/api/alert',alertRoutes);
 app.use('/api/user',userRoutes);
 
 const PORT = process.env.PORT;
-app.listen(PORT,() => console.log(`server running on port ${PORT}`));
+
+app.get('/', (req, res) => {
+  res.send('Smart Poultry API is running!');
+});
+
+app.listen(PORT, () => {
+    console.log(`server running on port ${PORT}`);
+});
 
