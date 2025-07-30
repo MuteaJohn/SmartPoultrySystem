@@ -20,7 +20,11 @@ exports.registerUser = async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User with that email already exists.' });
+      return res
+        .status(400)
+        .json({
+          message: "User with that email already exists. Please Sign In",
+        });
     }
 
     const hashed = await bcrypt.hash(password, 10);
@@ -36,8 +40,13 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   const { userName, password } = req.body;
   try {
-    const user = await User.findOne({ userName });
-    if (!user) return res.status(400).json({ message: "User not found" });
+    const user = await User.findOne({
+      $or: [{ userName }, { email: userName }],
+    });
+    if (!user)
+      return res
+        .status(400)
+        .json({ message: "User not found. Please Sign Up" });
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(401).json({ message: "Invalid credentials" });
