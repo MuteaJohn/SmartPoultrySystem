@@ -55,8 +55,8 @@ exports.loginUser = async (req, res, next) => {
 
   try {
     const user = await User.findOne({
-      $or: [{ userName }, { email: userName }],
-    });
+      $or: [{ userName }, { email: userName }]
+    }).select('+password');
 
     if (!user)
       return res
