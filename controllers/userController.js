@@ -46,6 +46,7 @@ exports.registerUser = async (req, res, next) => {
 
 exports.loginUser = async (req, res, next) => {
   const { userName, password } = req.body;
+  console.log("Received password:", password);
   if (!userName || !password) {
     return res
       .status(400)
@@ -87,13 +88,11 @@ exports.forgotPassword = async (req, res, next) => {
 
     if (!user) {
       // IMPORTANT: Always send a generic success message to prevent user enumeration
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message:
-            "If an account with that email/username exists, a password reset link has been sent.",
-        });
+      return res.status(200).json({
+        success: true,
+        message:
+          "If an account with that email/username exists, a password reset link has been sent.",
+      });
     }
 
     const resetToken = crypto.randomBytes(20).toString("hex"); //crypto module to generate a secure random token.
@@ -114,23 +113,19 @@ exports.forgotPassword = async (req, res, next) => {
         message: message,
       });
 
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "Password reset email sent successfully.",
-        });
+      res.status(200).json({
+        success: true,
+        message: "Password reset email sent successfully.",
+      });
     } catch (error) {
       console.error("Error sending email:", error);
       user.resetPasswordToken = undefined; // Clear token if email sending fails
       user.resetPasswordExpire = undefined;
       await user.save();
-      return res
-        .status(500)
-        .json({
-          success: false,
-          message: "Email could not be sent. Please try again later.",
-        });
+      return res.status(500).json({
+        success: false,
+        message: "Email could not be sent. Please try again later.",
+      });
     }
   } catch (error) {
     console.error("Forgot password error:", error);
@@ -155,12 +150,10 @@ exports.resetPassword = async (req, res, next) => {
     }
 
     if (!newPassword || newPassword.length < 6) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Please enter a new password with at least 6 characters.",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a new password with at least 6 characters.",
+      });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -171,12 +164,10 @@ exports.resetPassword = async (req, res, next) => {
 
     await user.save();
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Password has been reset successfully.",
-      });
+    res.status(200).json({
+      success: true,
+      message: "Password has been reset successfully.",
+    });
   } catch (error) {
     console.error("Reset password error:", error);
     next(error); // Pass to error handling middleware
